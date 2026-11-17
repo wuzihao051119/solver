@@ -1,0 +1,12 @@
+[workspace]
+resolver = "3"
+members = ["crates/solver-fem"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+
+[workspace.dependencies]
+nalgebra = "0"
+numeric_literals = "0"
+matrixcompare = "0"

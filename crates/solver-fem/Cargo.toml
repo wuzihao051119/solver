@@ -1,0 +1,9 @@
+[package]
+name = "solver-fem"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+nalgebra.workspace = true
+numeric_literals.workspace = true
+matrixcompare.workspace = true
