@@ -87,10 +87,23 @@ impl Connectivity for Quad4d2Connectivity {
     fn num_faces(&self) -> usize {
         4
     }
+
+    fn vertex_indices(&self) -> &[usize] {
+        &self.0
+    }
 }
 
 impl<T: Real> ElementConnectivity<T> for Quad4d2Connectivity {
     type Element = Quad4d2Element<T>;
     type GeometryDim = U2;
     type ReferenceDim = U2;
+
+    fn element(&self, vertices: &[Point2<T>]) -> Option<Self::Element> {
+        Some(Quad4d2Element::from_vertices([
+            *vertices.get(self.0[0])?,
+            *vertices.get(self.0[1])?,
+            *vertices.get(self.0[2])?,
+            *vertices.get(self.0[3])?,
+        ]))
+    }
 }

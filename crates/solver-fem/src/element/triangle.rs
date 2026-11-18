@@ -78,10 +78,22 @@ impl Connectivity for Tri3d2Connectivity {
     fn num_faces(&self) -> usize {
         3
     }
+
+    fn vertex_indices(&self) -> &[usize] {
+        &self.0
+    }
 }
 
 impl<T: Real> ElementConnectivity<T> for Tri3d2Connectivity {
     type Element = Tri3d2Element<T>;
     type GeometryDim = U2;
     type ReferenceDim = U2;
+
+    fn element(&self, vertices: &[Point2<T>]) -> Option<Self::Element> {
+        Some(Tri3d2Element::from_vertices([
+            *vertices.get(self.0[0])?,
+            *vertices.get(self.0[1])?,
+            *vertices.get(self.0[2])?,
+        ]))
+    }
 }

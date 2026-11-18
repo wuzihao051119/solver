@@ -78,10 +78,23 @@ impl Connectivity for Tet4d3Connectivity {
     fn num_faces(&self) -> usize {
         4
     }
+
+    fn vertex_indices(&self) -> &[usize] {
+        &self.0
+    }
 }
 
 impl<T: Real> ElementConnectivity<T> for Tet4d3Connectivity {
     type Element = Tet4d3Element<T>;
     type GeometryDim = U3;
     type ReferenceDim = U3;
+
+    fn element(&self, vertices: &[Point3<T>]) -> Option<Self::Element> {
+        Some(Tet4d3Element::from_vertices([
+            *vertices.get(self.0[0])?,
+            *vertices.get(self.0[1])?,
+            *vertices.get(self.0[2])?,
+            *vertices.get(self.0[3])?,
+        ]))
+    }
 }

@@ -69,10 +69,20 @@ impl Connectivity for Segment2d1Connectivity {
     fn num_faces(&self) -> usize {
         0
     }
+
+    fn vertex_indices(&self) -> &[usize] {
+        &self.0
+    }
 }
 
 impl<T: Real> ElementConnectivity<T> for Segment2d1Connectivity {
     type Element = Segment2d1Element<T>;
     type GeometryDim = U1;
     type ReferenceDim = U1;
+
+    fn element(&self, vertices: &[Point1<T>]) -> Option<Self::Element> {
+        let a = vertices[self.0[0]];
+        let b = vertices[self.0[1]];
+        Some(Segment2d1Element::from_vertices([a, b]))
+    }
 }

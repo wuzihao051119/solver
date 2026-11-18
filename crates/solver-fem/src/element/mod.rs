@@ -1,7 +1,8 @@
 use nalgebra::allocator::Allocator;
-use nalgebra::{DefaultAllocator, DimName, Dyn, MatrixViewMut, OMatrix, OPoint, Scalar};
+use nalgebra::{DefaultAllocator, Dyn, MatrixViewMut, OMatrix, OPoint, Scalar};
 
 use crate::mesh::connectivity::Connectivity;
+use crate::traits::SmallDim;
 
 pub mod hexahedron;
 pub mod quadrilateral;
@@ -14,7 +15,7 @@ where
     T: Scalar,
     DefaultAllocator: Allocator<Self::ReferenceDim>,
 {
-    type ReferenceDim: DimName;
+    type ReferenceDim: SmallDim;
 
     fn num_nodes(&self) -> usize;
 
@@ -38,7 +39,7 @@ where
         + Allocator<Self::ReferenceDim>
         + Allocator<Self::GeometryDim, Self::ReferenceDim>,
 {
-    type GeometryDim: DimName;
+    type GeometryDim: SmallDim;
 
     fn reference_jacobian(
         &self,
@@ -51,6 +52,16 @@ where
     ) -> OPoint<T, Self::GeometryDim>;
 }
 
+pub trait VolumetricFiniteElement<T>:
+    FiniteElement<T, ReferenceDim = <Self as FiniteElement<T>>::GeometryDim>
+where
+    T: Scalar,
+    DefaultAllocator: Allocator<Self::GeometryDim>
+        + Allocator<Self::ReferenceDim>
+        + Allocator<Self::GeometryDim, Self::ReferenceDim>,
+{
+}
+
 pub trait ElementConnectivity<T>: Connectivity
 where
     T: Scalar,
@@ -59,6 +70,8 @@ where
         + Allocator<Self::GeometryDim, Self::ReferenceDim>,
 {
     type Element: FiniteElement<T, GeometryDim = Self::GeometryDim, ReferenceDim = Self::ReferenceDim>;
-    type GeometryDim: DimName;
-    type ReferenceDim: DimName;
+    type GeometryDim: SmallDim;
+    type ReferenceDim: SmallDim;
+
+    fn element(&self, all_vertices: &[OPoint<T, Self::GeometryDim>]) -> Option<Self::Element>;
 }

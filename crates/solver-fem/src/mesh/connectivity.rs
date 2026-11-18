@@ -1,5 +1,6 @@
 pub trait Connectivity {
     fn num_faces(&self) -> usize;
+    fn vertex_indices(&self) -> &[usize];
 }
 
 #[derive(Debug, Clone)]
