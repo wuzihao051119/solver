@@ -2,7 +2,8 @@ use nalgebra::{Dyn, Matrix1x4, Matrix2, Matrix2x4, MatrixViewMut, Point2, Scalar
 use numeric_literals::replace_float_literals;
 
 use crate::{
-    element::{FiniteElement, ReferenceFiniteElement},
+    element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement},
+    mesh::connectivity::{Connectivity, Quad4d2Connectivity},
     traits::Real,
 };
 
@@ -80,4 +81,16 @@ impl<T: Real> FiniteElement<T> for Quad4d2Element<T> {
         self.populate_basis(N.as_mut_slice(), xi);
         Point2::from(X * N.transpose())
     }
+}
+
+impl Connectivity for Quad4d2Connectivity {
+    fn num_faces(&self) -> usize {
+        4
+    }
+}
+
+impl<T: Real> ElementConnectivity<T> for Quad4d2Connectivity {
+    type Element = Quad4d2Element<T>;
+    type GeometryDim = U2;
+    type ReferenceDim = U2;
 }

@@ -1,10 +1,9 @@
 use nalgebra::{Dyn, Matrix1x4, Matrix3, Matrix3x4, MatrixViewMut, Point3, Scalar, U3, Vector3};
 use numeric_literals::replace_float_literals;
 
-use crate::{
-    element::{FiniteElement, ReferenceFiniteElement},
-    traits::Real,
-};
+use crate::element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement};
+use crate::mesh::connectivity::{Connectivity, Tet4d3Connectivity};
+use crate::traits::Real;
 
 #[derive(Debug, Clone)]
 pub struct Tet4d3Element<T: Scalar> {
@@ -73,4 +72,16 @@ impl<T: Real> FiniteElement<T> for Tet4d3Element<T> {
         self.populate_basis(N.as_mut_slice(), xi);
         Point3::from(X * N.transpose())
     }
+}
+
+impl Connectivity for Tet4d3Connectivity {
+    fn num_faces(&self) -> usize {
+        4
+    }
+}
+
+impl<T: Real> ElementConnectivity<T> for Tet4d3Connectivity {
+    type Element = Tet4d3Element<T>;
+    type GeometryDim = U3;
+    type ReferenceDim = U3;
 }

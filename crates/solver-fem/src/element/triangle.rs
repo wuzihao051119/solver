@@ -2,7 +2,8 @@ use nalgebra::{Dyn, Matrix1x3, Matrix2, Matrix2x3, MatrixViewMut, Point2, Scalar
 use numeric_literals::replace_float_literals;
 
 use crate::{
-    element::{FiniteElement, ReferenceFiniteElement},
+    element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement},
+    mesh::connectivity::{Connectivity, Tri3d2Connectivity},
     traits::Real,
 };
 
@@ -71,4 +72,16 @@ impl<T: Real> FiniteElement<T> for Tri3d2Element<T> {
         self.populate_basis(N.as_mut_slice(), xi);
         Point2::from(X * N.transpose())
     }
+}
+
+impl Connectivity for Tri3d2Connectivity {
+    fn num_faces(&self) -> usize {
+        3
+    }
+}
+
+impl<T: Real> ElementConnectivity<T> for Tri3d2Connectivity {
+    type Element = Tri3d2Element<T>;
+    type GeometryDim = U2;
+    type ReferenceDim = U2;
 }

@@ -1,7 +1,8 @@
 use nalgebra::{Dyn, Matrix1, Matrix1x2, MatrixViewMut, Point1, Scalar, U1};
 use numeric_literals::replace_float_literals;
 
-use crate::element::{FiniteElement, ReferenceFiniteElement};
+use crate::element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement};
+use crate::mesh::connectivity::{Connectivity, Segment2d1Connectivity};
 use crate::traits::Real;
 
 #[derive(Debug, Clone)]
@@ -47,18 +48,31 @@ impl<T: Real> FiniteElement<T> for Segment2d1Element<T> {
     type GeometryDim = U1;
 
     #[allow(non_snake_case)]
-    fn reference_jacobian(&self, xi: &Point1<T>) -> Matrix1<T> {
-        let X = Matrix1x2::from_fn(|i, j| self.vertices[j][i]);
-        let mut G = Matrix1x2::zeros();
-        self.populate_basis_gradients(G.as_view_mut(), xi);
-        X * G.transpose()
+    #[replace_float_literals(T::from_f64(literal).expect("Literal must fit in T"))]
+    fn reference_jacobian(&self, _xi: &Point1<T>) -> Matrix1<T> {
+        let a = &self.vertices[0].coords;
+        let b = &self.vertices[1].coords;
+        (b - a) / 2.0
     }
 
     #[allow(non_snake_case)]
     fn map_reference_coords(&self, xi: &Point1<T>) -> Point1<T> {
-        let X = Matrix1x2::from_fn(|i, j| self.vertices[j][i]);
+        let a = &self.vertices[0].coords;
+        let b = &self.vertices[1].coords;
         let mut N = Matrix1x2::zeros();
         self.populate_basis(N.as_mut_slice(), xi);
-        Point1::from(X * N.transpose())
+        Point1::from(a * N[0] + b * N[1])
     }
+}
+
+impl Connectivity for Segment2d1Connectivity {
+    fn num_faces(&self) -> usize {
+        0
+    }
+}
+
+impl<T: Real> ElementConnectivity<T> for Segment2d1Connectivity {
+    type Element = Segment2d1Element<T>;
+    type GeometryDim = U1;
+    type ReferenceDim = U1;
 }

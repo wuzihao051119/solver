@@ -1,6 +1,7 @@
+use nalgebra::allocator::Allocator;
 use nalgebra::{DefaultAllocator, DimName, Dyn, MatrixViewMut, OMatrix, OPoint, Scalar};
 
-use crate::traits::{BiDimAllocator, DimAllocator};
+use crate::mesh::connectivity::Connectivity;
 
 pub mod hexahedron;
 pub mod quadrilateral;
@@ -11,7 +12,7 @@ pub mod triangle;
 pub trait ReferenceFiniteElement<T>
 where
     T: Scalar,
-    DefaultAllocator: DimAllocator<Self::ReferenceDim>,
+    DefaultAllocator: Allocator<Self::ReferenceDim>,
 {
     type ReferenceDim: DimName;
 
@@ -33,7 +34,9 @@ where
 pub trait FiniteElement<T>: ReferenceFiniteElement<T>
 where
     T: Scalar,
-    DefaultAllocator: BiDimAllocator<Self::GeometryDim, Self::ReferenceDim>,
+    DefaultAllocator: Allocator<Self::GeometryDim>
+        + Allocator<Self::ReferenceDim>
+        + Allocator<Self::GeometryDim, Self::ReferenceDim>,
 {
     type GeometryDim: DimName;
 
@@ -46,4 +49,16 @@ where
         &self,
         reference_coords: &OPoint<T, Self::ReferenceDim>,
     ) -> OPoint<T, Self::GeometryDim>;
+}
+
+pub trait ElementConnectivity<T>: Connectivity
+where
+    T: Scalar,
+    DefaultAllocator: Allocator<Self::GeometryDim>
+        + Allocator<Self::ReferenceDim>
+        + Allocator<Self::GeometryDim, Self::ReferenceDim>,
+{
+    type Element: FiniteElement<T, GeometryDim = Self::GeometryDim, ReferenceDim = Self::ReferenceDim>;
+    type GeometryDim: DimName;
+    type ReferenceDim: DimName;
 }

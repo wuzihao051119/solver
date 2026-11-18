@@ -7,3 +7,6 @@ edition.workspace = true
 nalgebra.workspace = true
 numeric_literals.workspace = true
 matrixcompare.workspace = true
+eyre.workspace = true
+mshio.workspace = true
+num-traits.workspace = true

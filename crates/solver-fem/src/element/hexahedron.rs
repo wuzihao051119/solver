@@ -1,7 +1,8 @@
 use nalgebra::{Dyn, Matrix3, MatrixViewMut, Point3, Scalar, U3, Vector3};
 use numeric_literals::replace_float_literals;
 
-use crate::element::ReferenceFiniteElement;
+use crate::element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement};
+use crate::mesh::connectivity::{Connectivity, Hex8d3Connectivity};
 use crate::traits::Real;
 use crate::types::{Matrix1x8, Matrix3x8};
 
@@ -70,9 +71,11 @@ impl<T: Real> ReferenceFiniteElement<T> for Hex8d3Element<T> {
     }
 }
 
-impl<T: Real> Hex8d3Element<T> {
+impl<T: Real> FiniteElement<T> for Hex8d3Element<T> {
+    type GeometryDim = U3;
+
     #[allow(non_snake_case)]
-    pub fn reference_jacobian(&self, xi: &Point3<T>) -> Matrix3<T> {
+    fn reference_jacobian(&self, xi: &Point3<T>) -> Matrix3<T> {
         let X = Matrix3x8::from_fn(|i, j| self.vertices[j][i]);
         let mut G = Matrix3x8::zeros();
         self.populate_basis_gradients(G.as_view_mut(), xi);
@@ -80,10 +83,22 @@ impl<T: Real> Hex8d3Element<T> {
     }
 
     #[allow(non_snake_case)]
-    pub fn map_reference_coords(&self, xi: &Point3<T>) -> Point3<T> {
+    fn map_reference_coords(&self, xi: &Point3<T>) -> Point3<T> {
         let X = Matrix3x8::from_fn(|i, j| self.vertices[j][i]);
         let mut N = Matrix1x8::zeros();
         self.populate_basis(N.as_mut_slice(), xi);
         Point3::from(X * N.transpose())
     }
+}
+
+impl Connectivity for Hex8d3Connectivity {
+    fn num_faces(&self) -> usize {
+        6
+    }
+}
+
+impl<T: Real> ElementConnectivity<T> for Hex8d3Connectivity {
+    type Element = Hex8d3Element<T>;
+    type GeometryDim = U3;
+    type ReferenceDim = U3;
 }
