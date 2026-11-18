@@ -1,5 +1,5 @@
 use nalgebra::DimName;
 
-pub trait Operators {
+pub trait Operator {
     type SolutionDim: DimName;
 }

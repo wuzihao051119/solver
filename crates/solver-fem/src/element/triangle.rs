@@ -1,11 +1,9 @@
 use nalgebra::{Dyn, Matrix1x3, Matrix2, Matrix2x3, MatrixViewMut, Point2, Scalar, U2, Vector2};
 use numeric_literals::replace_float_literals;
 
-use crate::{
-    element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement},
-    mesh::connectivity::{Connectivity, Tri3d2Connectivity},
-    traits::Real,
-};
+use crate::element::{ElementConnectivity, FiniteElement, ReferenceFiniteElement};
+use crate::mesh::connectivity::{Connectivity, Tri3d2Connectivity};
+use crate::traits::Real;
 
 #[derive(Debug, Clone)]
 pub struct Tri3d2Element<T: Scalar> {

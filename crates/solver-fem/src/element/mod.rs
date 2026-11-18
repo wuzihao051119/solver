@@ -62,6 +62,16 @@ where
 {
 }
 
+impl<T, E> VolumetricFiniteElement<T> for E
+where
+    T: Scalar,
+    E: FiniteElement<T, ReferenceDim = <Self as FiniteElement<T>>::GeometryDim>,
+    DefaultAllocator: Allocator<Self::GeometryDim>
+        + Allocator<Self::ReferenceDim>
+        + Allocator<Self::GeometryDim, Self::ReferenceDim>,
+{
+}
+
 pub trait ElementConnectivity<T>: Connectivity
 where
     T: Scalar,

@@ -1,0 +1,11 @@
+[package]
+name = "solver-examples"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+solver-fem.workspace = true
+
+nalgebra.workspace = true
+eyre.workspace = true
+matrixcompare.workspace = true

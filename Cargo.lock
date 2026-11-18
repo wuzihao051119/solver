@@ -166,6 +166,7 @@ dependencies = [
  "glam 0.31.1",
  "glam 0.32.1",
  "glam 0.33.12",
+ "matrixcompare-core",
  "matrixmultiply",
  "nalgebra-macros",
  "num-complex 0.4.6",
@@ -377,6 +378,16 @@ dependencies = [
  "num-complex 0.4.6",
  "num-traits",
  "wide",
+]
+
+[[package]]
+name = "solver-examples"
+version = "0.1.0"
+dependencies = [
+ "eyre",
+ "matrixcompare",
+ "nalgebra",
+ "solver-fem",
 ]
 
 [[package]]

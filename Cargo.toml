@@ -1,13 +1,18 @@
 [workspace]
 resolver = "3"
-members = ["crates/solver-fem"]
+members = [
+    "crates/solver-fem",
+    "crates/solver-examples"
+]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
 
 [workspace.dependencies]
-nalgebra = "0"
+solver-fem = { path = "crates/solver-fem" }
+
+nalgebra = { version = "0", features = ["compare"] }
 numeric_literals = "0"
 matrixcompare = "0"
 eyre = "0"
