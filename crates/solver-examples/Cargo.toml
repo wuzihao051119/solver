@@ -9,3 +9,4 @@ solver-fem.workspace = true
 nalgebra.workspace = true
 eyre.workspace = true
 matrixcompare.workspace = true
+nalgebra-sparse.workspace = true

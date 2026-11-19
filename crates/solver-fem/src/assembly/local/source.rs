@@ -3,25 +3,15 @@ use std::marker::PhantomData;
 use itertools::izip;
 use nalgebra::allocator::Allocator;
 use nalgebra::{
-    DVectorViewMut, DefaultAllocator, DimName, Dyn, MatrixView, MatrixViewMut, OPoint, OVector,
-    Scalar, U1,
+    DVectorViewMut, DefaultAllocator, DimName, Dyn, MatrixView, MatrixViewMut, OPoint, Scalar, U1,
 };
 
 use crate::assembly::local::quadrature_table::QuadratureTable;
 use crate::assembly::local::{ElementConnectivityAssembler, ElementVectorAssembler};
-use crate::assembly::operators::Operator;
+use crate::assembly::operators::{Operator, SourceFunction};
 use crate::element::VolumetricFiniteElement;
 use crate::space::{ElementInSpace, VolumetricFiniteElementSpace};
 use crate::traits::Real;
-
-pub trait SourceFunction<T, GeometryDim>: Operator
-where
-    T: Scalar,
-    GeometryDim: DimName,
-    DefaultAllocator: Allocator<GeometryDim> + Allocator<Self::SolutionDim>,
-{
-    fn evaluate(&self, coords: &OPoint<T, GeometryDim>) -> OVector<T, Self::SolutionDim>;
-}
 
 pub struct ElementSourceAssemblerBuilder<T, SpaceRef, SourceRef, QTableRef> {
     space: SpaceRef,
@@ -152,8 +142,8 @@ where
     ) -> eyre::Result<()> {
         let element = ElementInSpace::from_space_and_element_index(self.space, element_index);
         let quadrature_size = self.qtable.element_quadrature_size(element_index);
-        let mut points = vec![OPoint::origin(); quadrature_size];
         let mut weights = vec![T::zero(); quadrature_size];
+        let mut points = vec![OPoint::origin(); quadrature_size];
         self.qtable
             .populate_element_quadrature(element_index, &mut points, &mut weights);
 

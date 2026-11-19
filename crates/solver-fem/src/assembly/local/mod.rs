@@ -2,6 +2,7 @@ use nalgebra::{DMatrix, DMatrixViewMut, DVector, DVectorViewMut, Scalar};
 
 use crate::traits::Real;
 
+pub mod elliptic;
 pub mod quadrature_table;
 pub mod source;
 
